@@ -99,11 +99,10 @@ class _OrderDetailPage extends StatelessWidget {
                   "Products:",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                for (var item in order.orderInfo.products) ...{
+                for (var item in order.orderInfo.products)
                   Text(
                     "${_getOrderQuantityAndName(item)} ${_getOrderTotal(item)}",
                   ),
-                },
                 const SizedBox(height: 16.0),
                 Text(
                   "Total: ${order.orderInfo.roundedTotalAmount}",
