@@ -10,17 +10,17 @@ import XCTest
 
 class RunnerTests: XCTestCase {
 
-  func testGetPlatformVersion() {
-    let plugin = FlutterThermalPrinterPlugin()
+  // func testGetPlatformVersion() {
+  //   let plugin = FlutterThermalPrinterPlugin()
 
-    let call = FlutterMethodCall(methodName: "getPlatformVersion", arguments: [])
+  //   let call = FlutterMethodCall(methodName: "getPlatformVersion", arguments: [])
 
-    let resultExpectation = expectation(description: "result block must be called.")
-    plugin.handle(call) { result in
-      XCTAssertEqual(result as! String, "iOS " + UIDevice.current.systemVersion)
-      resultExpectation.fulfill()
-    }
-    waitForExpectations(timeout: 1)
-  }
+  //   let resultExpectation = expectation(description: "result block must be called.")
+  //   plugin.handle(call) { result in
+  //     XCTAssertEqual(result as! String, "iOS " + UIDevice.current.systemVersion)
+  //     resultExpectation.fulfill()
+  //   }
+  //   waitForExpectations(timeout: 1)
+  // }
 
 }

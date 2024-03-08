@@ -43,6 +43,6 @@ PrintJobResult toPrintJobResult(PrintJobRequest request) => PrintJobResult(
       orderMetadata: request.orderMetadata,
       orderPrintInfo: OrderPrintInfo(
         printedAt: DateTime.now(),
-        status: PrintStatus.inQueue,
+        status: PrintState.inQueue,
       ),
     );

@@ -1,4 +1,4 @@
-enum PrintStatus {
+enum PrintState {
   printed,
 
   printing,

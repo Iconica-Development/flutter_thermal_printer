@@ -1,14 +1,14 @@
 class ProductInfo {
-  ProductInfo({
+  const ProductInfo({
     required this.name,
     required this.price,
     required this.quantity,
   });
 
   factory ProductInfo.fromJson(Map<String, dynamic> json) => ProductInfo(
-        name: json['name'] as String,
-        price: json['price'] as double,
-        quantity: json['quantity'] as int,
+        name: json["name"] as String,
+        price: json["price"] as double,
+        quantity: json["quantity"] as int,
       );
 
   final String name;
@@ -20,4 +20,10 @@ class ProductInfo {
   String get roundedTotal => total.toStringAsFixed(2);
 
   String get roundedProductPrice => price.toStringAsFixed(2);
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "price": price,
+        "quantity": quantity,
+      };
 }
