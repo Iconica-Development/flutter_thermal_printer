@@ -29,7 +29,10 @@ android {
         namespace 'com.iconica.flutter_thermal_printer'
     }
 
-    compileSdk 34
+    compileSdk 33
+    compileSdkVersion 34
+
+    buildToolsVersion "35.0.0-rc1"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -65,4 +68,9 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    implementation 'com.starmicronics:stario:2.8.0'
+    implementation 'com.starmicronics:starioextension:1.14.0'
 }

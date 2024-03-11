@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.iconica.flutter_thermal_printer_example"
-    compileSdk flutter.compileSdkVersion
+    compileSdk 33
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -60,8 +61,10 @@ android {
     }
 }
 
+dependencies {
+    implementation project(':flutter_thermal_printer')
+}
+
 flutter {
     source '../..'
 }
-
-dependencies {}
