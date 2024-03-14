@@ -1,11 +1,11 @@
 enum PrinterState {
   ok,
   unknown,
+  notFound,
   offline,
 
   coverOpen,
 
-  paperSeparatorError,
   cutterError,
   highTemperatureError,
   voltageError,

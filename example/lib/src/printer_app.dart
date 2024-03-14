@@ -5,12 +5,12 @@ class PrinterApp extends StatelessWidget {
   const PrinterApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  MaterialApp build(BuildContext context) => MaterialApp(
         home: Scaffold(
           appBar: AppBar(
             title: const Text("Flutter Printer"),
           ),
-          body: Homepage(),
+          body: const Homepage(),
         ),
       );
 }

@@ -1,39 +1,78 @@
+import "package:flutter/foundation.dart";
+import "package:flutter/services.dart";
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
-import "package:flutter_thermal_printer/src/models/printer_status.dart";
-import "package:flutter_thermal_printer/src/services/implementation/printer_method_channel.dart";
-import "package:plugin_platform_interface/plugin_platform_interface.dart";
+import "package:flutter_thermal_printer/src/models/printer_info.dart";
+import "package:logging/logging.dart";
 
-abstract class PrinterPlatform extends PlatformInterface {
-  PrinterPlatform() : super(token: _token);
+class PrinterPlatform {
+  @visibleForTesting
+  final methodChannel = const MethodChannel("flutter_thermal_printer");
 
-  static final Object _token = Object();
+  final _logger = Logger("PrinterPlatform");
 
-  static PrinterPlatform _instance = PrinterMethodChannel();
+  Future<PrinterStatus?> getPrinter() async {
+    dynamic result;
 
-  static PrinterPlatform get instance => _instance;
+    try {
+      result = await methodChannel.invokeMethod("getPrinter");
+    } on PlatformException {
+      _logger.warning("Failed to get best printer match.");
+      return null;
+    }
 
-  static set instance(PrinterPlatform instance) {
-    PlatformInterface.verifyToken(instance, _token);
-    _instance = instance;
+    if (result != null) {
+      return getStatus();
+    } else {
+      return null;
+    }
   }
 
-  Future<PrinterStatus?> searchPrinter() {
-    throw UnimplementedError("searchPrinter() has not been implemented.");
+  Future<List<PrinterInfo>> getPrinters() async {
+    List<dynamic>? result;
+
+    try {
+      result = await methodChannel
+          .invokeMethod<List<Map<String, dynamic>>>("getPrinters");
+    } on PlatformException {
+      _logger.warning("Failed to get printers.");
+      return [];
+    }
+
+    var printerInfoList = <PrinterInfo>[];
+    if (result != null) {
+      for (var item in result) {
+        printerInfoList.add(PrinterInfo.fromJson(item));
+      }
+    }
+    return printerInfoList;
   }
 
-  Future<bool> isConnected() {
-    throw UnimplementedError("isConnected() has not been implemented.");
+  Future<PrinterStatus?> getStatus() async {
+    var result = await methodChannel.invokeMethod("getStatus");
+    return result != null
+        ? PrinterStatus.fromJson(Map<String, dynamic>.from(result))
+        : null;
   }
 
-  Future<bool> isPrinting() {
-    throw UnimplementedError("isPrinting() has not been implemented.");
-  }
+  Future<bool> isPrinting() async =>
+      await methodChannel.invokeMethod<bool?>("isPrinting") ?? false;
 
-  Future<PrinterStatus?> getStatus() {
-    throw UnimplementedError("getStatus() has not been implemented.");
-  }
+  Future<void> setPrinter(String portName) async =>
+      methodChannel.invokeMethod("setPrinter", Map.from({portName: portName}));
 
-  Future<PrintJobResult> print(PrintJobResult request) {
-    throw UnimplementedError("print() has not been implemented.");
+  Future<PrintJobResult> executePrint(PrintJobResult request) async {
+    request.orderPrintInfo.status = PrintState.printing;
+
+    var result =
+        await methodChannel.invokeMethod<bool?>("print", request.toJson()) ??
+            false;
+
+    if (result) {
+      request.orderPrintInfo.status = PrintState.printed;
+    } else {
+      request.orderPrintInfo.status = PrintState.failed;
+    }
+
+    return request;
   }
 }

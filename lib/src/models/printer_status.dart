@@ -3,12 +3,22 @@ import "package:flutter_thermal_printer/src/models/enums/printer_state.dart";
 class PrinterStatus {
   PrinterStatus({required this.state, required this.isRecoverable});
 
-  factory PrinterStatus.fromJson(Map<String, dynamic> json) => PrinterStatus(
-        state: PrinterState.values.contains(json["state"])
-            ? json["state"] as PrinterState
-            : PrinterState.unknown,
-        isRecoverable: json["isRecoverable"] as bool,
-      );
+  factory PrinterStatus.fromJson(Map<String, dynamic> json) {
+    for (var value in PrinterState.values) {
+      if (json["state"] == value.name) {
+        return PrinterStatus(
+          state: value,
+          isRecoverable:
+              json["isRecoverable"].toString().toLowerCase() == "true",
+        );
+      }
+    }
+
+    return PrinterStatus(
+      state: PrinterState.unknown,
+      isRecoverable: json["isRecoverable"].toString().toLowerCase() == "true",
+    );
+  }
 
   PrinterState state;
   bool isRecoverable;
@@ -30,6 +40,9 @@ class PrinterStatus {
 
   String? getError() {
     switch (state) {
+      case PrinterState.notFound:
+        return """
+Could not find any printer. Make sure your printer is turned on.""";
       case PrinterState.unknown:
         return """
 Something unexpected happened to the printer. Try restarting the printer.""";
@@ -37,8 +50,6 @@ Something unexpected happened to the printer. Try restarting the printer.""";
         return "The printer is offline.";
       case PrinterState.coverOpen:
         return "The printer cover is open.";
-      case PrinterState.paperSeparatorError:
-        return "The paper separator is not working properly.";
       case PrinterState.cutterError:
         return "The cutter is not working properly.";
       case PrinterState.highTemperatureError:

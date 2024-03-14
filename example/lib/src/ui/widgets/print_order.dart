@@ -30,7 +30,7 @@ String _getOrderDate(DateTime date) => date.day == DateTime.now().day
     : "${formatDayMonthYear(date)} at ${formatHourMinute(date)}";
 
 String _getOrderStatus(PrintJobResult order) =>
-    order.orderPrintInfo.status.toString().split(".").last;
+    order.orderPrintInfo.status.name;
 
 class _OrderCard extends StatelessWidget {
   const _OrderCard({

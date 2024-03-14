@@ -73,4 +73,5 @@ android {
 dependencies {
     implementation 'com.starmicronics:stario:2.8.0'
     implementation 'com.starmicronics:starioextension:1.14.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
 }

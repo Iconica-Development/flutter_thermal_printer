@@ -12,6 +12,7 @@ dependencies:
     path: ../
   cupertino_icons: ^1.0.6
   intl: ^0.19.0
+  permission_handler: ^11.3.0
   
 
 dev_dependencies:
