@@ -7,6 +7,7 @@ import com.iconica.flutter_thermal_printer.models.PrinterInfo
 import com.starmicronics.stario.PortInfo
 import com.starmicronics.stario.StarIOPort
 import com.starmicronics.stario.StarIOPortException
+import java.io.IOException
 
 import java.util.logging.Logger
 
@@ -145,6 +146,8 @@ class PrinterSearchingService {
             }
         } catch (e: StarIOPortException) {
             logger.warning("Error getting model name: ${e.message}")
+        } catch (e: IOException) {
+            logger.warning("Failed to connect to Socket: ${e.message}")
         } finally {
             port?.let {
                 try {

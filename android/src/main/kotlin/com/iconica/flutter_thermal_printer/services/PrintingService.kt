@@ -1,13 +1,17 @@
 package com.iconica.flutter_thermal_printer.services
 
 import android.content.Context
+
+import com.iconica.flutter_thermal_printer.enums.ReceiptType
 import com.iconica.flutter_thermal_printer.models.PrinterInfo
+import com.iconica.flutter_thermal_printer.models.TableInfo
 
 import com.starmicronics.stario.StarIOPort
 import com.starmicronics.stario.StarIOPortException
 import com.starmicronics.starioextension.ICommandBuilder
 import com.starmicronics.starioextension.StarIoExt
 
+import java.io.IOException
 import java.util.logging.Logger
 
 /**
@@ -21,6 +25,7 @@ class PrintingService {
 
     private val logger = Logger.getLogger("PrintingService")
 
+    private val printerBuilder = PrinterBuilder()
     private val printerSearchingService = PrinterSearchingService()
     private val printerStatusService = PrinterStatusService()
 
@@ -43,7 +48,10 @@ class PrintingService {
      * @param applicationContext {@link Context} The application context.
      * @return {@link Boolean} True if the print was successful, false otherwise.
      */
-    fun startPrint(applicationContext: Context): Boolean {
+    fun startPrint(
+        applicationContext: Context,
+        receiptData: List<Pair<ReceiptType, Any>>
+    ): Boolean {
         if (isPrinting) {
             logger.warning("Already printing")
             return false
@@ -59,7 +67,7 @@ class PrintingService {
             return false
         }
 
-        val receiptBuilder = buildReceipt(printerInfo)
+        val receiptBuilder = buildReceipt(printerInfo, receiptData)
 
         try {
             port = StarIOPort.getPort(
@@ -89,6 +97,9 @@ class PrintingService {
         } catch (e: StarIOPortException) {
             logger.severe("Error opening port: ${e.message}")
             return false
+        } catch (e: IOException) {
+            logger.warning("Failed to connect to Socket: ${e.message}")
+            return false
         } finally {
             port?.let {
                 try {
@@ -101,12 +112,77 @@ class PrintingService {
         }
     }
 
-    private fun buildReceipt(printerInfo: PrinterInfo): ICommandBuilder {
+    private fun buildReceipt(
+        printerInfo: PrinterInfo,
+        receiptData: List<Pair<ReceiptType, Any>>
+    ): ICommandBuilder {
         val builder = StarIoExt.createCommandBuilder(printerInfo.emulation)
         builder.beginDocument()
 
-        builder.appendQrCode("https://iconica.app".toByteArray(), ICommandBuilder.QrCodeModel.No2, ICommandBuilder.QrCodeLevel.M, 5)
-        builder.appendUnitFeed(32)
+        for (data in receiptData) {
+            try {
+                when (data.first) {
+                    ReceiptType.text -> {
+                        val textData = data.second as String
+                        builder.appendBitmap(
+                            printerBuilder.createBitmapFromText(
+                                textData,
+                                PAPER_WIDTH
+                            ),
+                            true,
+                            PAPER_WIDTH,
+                            true
+                        )
+                    }
+
+                    ReceiptType.qrCode -> {
+                        val qrCodeData = (data.second as String).toByteArray()
+                        builder.appendQrCodeWithAlignment(
+                            qrCodeData,
+                            ICommandBuilder.QrCodeModel.No1,
+                            ICommandBuilder.QrCodeLevel.Q,
+                            8,
+                            ICommandBuilder.AlignmentPosition.Center
+                        )
+                    }
+
+                    ReceiptType.barcode -> {
+                        val barcodeData = (data.second as String).toByteArray()
+                        builder.appendBarcodeWithAlignment(
+                            barcodeData,
+                            ICommandBuilder.BarcodeSymbology.Code128,
+                            ICommandBuilder.BarcodeWidth.Mode1,
+                            50,
+                            true,
+                            ICommandBuilder.AlignmentPosition.Center
+                        )
+                    }
+
+                    ReceiptType.table -> {
+                        val tableData = data.second as TableInfo
+                        builder.appendBitmap(
+                            printerBuilder.createBitmapFromTableInfo(PAPER_WIDTH, tableData),
+                            true,
+                            PAPER_WIDTH,
+                            true
+                        )
+                    }
+
+                    ReceiptType.spacing -> {
+                        val spacing = (data.second as String).toIntOrNull()
+                        if (spacing != null) {
+                            builder.appendUnitFeed(spacing)
+                        } else {
+                            logger.warning("Invalid spacing value: ${data.second}")
+                            builder.appendUnitFeed(20)
+                        }
+                    }
+                }
+            } catch (e: IncorrectAndroidVersionException) {
+                logger.severe("Failed to create bitmap: ${e.message}")
+            }
+        }
+
         builder.appendCutPaper(ICommandBuilder.CutPaperAction.PartialCutWithFeed)
 
         builder.endDocument()
@@ -116,6 +192,6 @@ class PrintingService {
 
     internal companion object {
         private const val TIMEOUT = 10_000
+        private const val PAPER_WIDTH = 576
     }
-
 }

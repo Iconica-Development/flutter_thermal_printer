@@ -1,7 +1,7 @@
 import "package:flutter_thermal_printer/src/models/enums/printer_state.dart";
 
 class PrinterStatus {
-  PrinterStatus({required this.state, required this.isRecoverable});
+  const PrinterStatus({required this.state, required this.isRecoverable});
 
   factory PrinterStatus.fromJson(Map<String, dynamic> json) {
     for (var value in PrinterState.values) {
@@ -20,8 +20,8 @@ class PrinterStatus {
     );
   }
 
-  PrinterState state;
-  bool isRecoverable;
+  final PrinterState state;
+  final bool isRecoverable;
 
   bool? isOK() => state == PrinterState.ok;
 

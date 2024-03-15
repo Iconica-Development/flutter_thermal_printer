@@ -1,9 +1,9 @@
 package com.iconica.flutter_thermal_printer
 
 import android.content.Context
-import android.os.Build
 import android.os.StrictMode
 
+import com.iconica.flutter_thermal_printer.converter.ReceiptConverter
 import com.iconica.flutter_thermal_printer.services.PrinterStatusService
 import com.iconica.flutter_thermal_printer.services.PrintingService
 import com.iconica.flutter_thermal_printer.services.PrinterSearchingService
@@ -34,12 +34,13 @@ class PluginController: FlutterPlugin, MethodCallHandler {
   private val printerSearchingService = PrinterSearchingService()
   private val printerStatusService = PrinterStatusService()
   private val printingService = PrintingService()
+  private val receiptConverter = ReceiptConverter()
 
   /**
    * This {@code FlutterPlugin} has been associated with a {@link
    * io.flutter.embedding.engine.FlutterEngine} instance.
    *
-   * <p>Relevant resources that this {@code FlutterPlugin} may need are provided via the {@code
+   * Relevant resources that this {@code FlutterPlugin} may need are provided via the {@code
    * binding}. The {@code binding} may be cached and referenced until {@link
    * #onDetachedFromEngine(FlutterPluginBinding)} is invoked and returns.
    */
@@ -55,15 +56,15 @@ class PluginController: FlutterPlugin, MethodCallHandler {
   /**
    * Handles the specified method call received from Flutter.
    *
-   * <p>Handler implementations must submit a result for all incoming calls, by making a single
+   * Handler implementations must submit a result for all incoming calls, by making a single
    * call on the given {@link Result} callback. Failure to do so will result in lingering Flutter
    * result handlers. The result may be submitted asynchronously and on any thread. Calls to
    * unknown or unimplemented methods should be handled using {@link Result#notImplemented()}.
    *
-   * <p>Any uncaught exception thrown by this method will be caught by the channel implementation
+   * Any uncaught exception thrown by this method will be caught by the channel implementation
    * and logged, and an error result will be sent back to Flutter.
    *
-   * <p>The handler is called on the platform thread (Android main thread) by default, or
+   * The handler is called on the platform thread (Android main thread) by default, or
    * otherwise on the thread specified by the {@link BinaryMessenger.TaskQueue} provided to the
    * associated {@link MethodChannel} when it was created. See also <a
    * href="https://github.com/flutter/flutter/wiki/The-Engine-architecture#threading">Threading in
@@ -120,7 +121,10 @@ class PluginController: FlutterPlugin, MethodCallHandler {
       }
 
       "print" -> {
-        result.success(printingService.startPrint(applicationContext))
+        val receiptInfo: ArrayList<HashMap<String, String>> = call.argument<ArrayList<HashMap<String, String>>>("receiptInfo") as ArrayList<HashMap<String, String>>
+        val receiptData = receiptConverter.convertReceipt(receiptInfo)
+
+        result.success(printingService.startPrint(applicationContext, receiptData))
       }
 
       else -> {
@@ -133,12 +137,12 @@ class PluginController: FlutterPlugin, MethodCallHandler {
    * This {@code FlutterPlugin} has been removed from a {@link
    * io.flutter.embedding.engine.FlutterEngine} instance.
    *
-   * <p>The {@code binding} passed to this method is the same instance that was passed in {@link
+   * The {@code binding} passed to this method is the same instance that was passed in {@link
    * #onAttachedToEngine(FlutterPluginBinding)}. It is provided again in this method as a
    * convenience. The {@code binding} may be referenced during the execution of this method, but it
    * must not be cached or referenced after this method returns.
    *
-   * <p>{@code FlutterPlugin}s should release all resources in this method.
+   * {@code FlutterPlugin}s should release all resources in this method.
    */
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)

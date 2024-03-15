@@ -63,9 +63,11 @@ class PrinterPlatform {
   Future<PrintJobResult> executePrint(PrintJobResult request) async {
     request.orderPrintInfo.status = PrintState.printing;
 
-    var result =
-        await methodChannel.invokeMethod<bool?>("print", request.toJson()) ??
-            false;
+    var result = await methodChannel.invokeMethod<bool?>(
+          "print",
+          request.toJson(),
+        ) ??
+        false;
 
     if (result) {
       request.orderPrintInfo.status = PrintState.printed;

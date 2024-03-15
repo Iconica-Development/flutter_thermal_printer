@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
+import "package:flutter_thermal_printer_example/src/models/order_info.dart";
+import "package:flutter_thermal_printer_example/src/models/product_info.dart";
 import "package:flutter_thermal_printer_example/src/services/datetime_formatter.dart";
 
 class PrintOrder extends StatelessWidget {
@@ -48,12 +50,13 @@ class _OrderCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Order: ${order.orderInfo.orderId}",
+                  "Order: ${order.orderMetadata.get("OrderId")}",
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
               Text(
-                "Order Date: ${_getOrderDate(order.orderMetadata.orderDate)}",
+                """
+Order Date: ${_getOrderDate(order.orderMetadata.get("OrderDate"))}""",
               ),
               Text(
                 "Status: ${_getOrderStatus(order)}",
@@ -80,14 +83,15 @@ class _OrderDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text("Order: ${order.orderInfo.orderId}"),
+          title: Text("Order: ${order.orderMetadata.get("OrderId")}"),
         ),
         body: SizedBox(
           child: Center(
             child: Column(
               children: [
                 Text(
-                  "Order Date: ${_getOrderDate(order.orderMetadata.orderDate)}",
+                  """
+Order Date: ${_getOrderDate(order.orderMetadata.get("OrderId"))}""",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
@@ -99,13 +103,17 @@ class _OrderDetailPage extends StatelessWidget {
                   "Products:",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                for (var item in order.orderInfo.products)
+                for (var item
+                    in (order.orderMetadata.get("OrderInfo") as OrderInfo)
+                        .products)
                   Text(
                     "${_getOrderQuantityAndName(item)} ${_getOrderTotal(item)}",
                   ),
                 const SizedBox(height: 16.0),
                 Text(
-                  "Total: ${order.orderInfo.roundedTotalAmount}",
+                  """
+Total: 
+${(order.orderMetadata.get("OrderInfo") as OrderInfo).roundedTotalAmount}""",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],

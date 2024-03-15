@@ -1,27 +1,16 @@
-import "package:flutter_thermal_printer/src/models/orders/order_info.dart";
 import "package:flutter_thermal_printer/src/models/orders/order_metadata.dart";
+import "package:flutter_thermal_printer/src/models/receipt_dto.dart";
 
 class PrintJobRequest {
   const PrintJobRequest({
-    required this.orderInfo,
+    required this.receiptDTO,
     required this.orderMetadata,
   });
 
-  factory PrintJobRequest.fromJson(Map<String, dynamic> json) =>
-      PrintJobRequest(
-        orderInfo: OrderInfo.fromJson(
-          json["orderInfo"] as Map<String, dynamic>,
-        ),
-        orderMetadata: OrderMetadata.fromJson(
-          json["orderMetadata"] as Map<String, dynamic>,
-        ),
-      );
-
-  final OrderInfo orderInfo;
+  final ReceiptDTO receiptDTO;
   final OrderMetadata orderMetadata;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        "orderInfo": orderInfo.toJson(),
-        "orderMetadata": orderMetadata.toJson(),
+        "receiptInfo": receiptDTO.toJson(),
       };
 }

@@ -1,4 +1,4 @@
-import "package:flutter_thermal_printer/src/models/orders/product_info.dart";
+import "package:flutter_thermal_printer_example/src/models/product_info.dart";
 
 class OrderInfo {
   OrderInfo({

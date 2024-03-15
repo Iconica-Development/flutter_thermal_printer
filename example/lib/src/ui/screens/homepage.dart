@@ -59,8 +59,10 @@ class _HomepageState extends State<Homepage> {
                   itemCount: results.length,
                   itemBuilder: (context, index) {
                     results.sort(
-                      (a, b) => a.orderMetadata.orderDate
-                          .compareTo(b.orderMetadata.orderDate),
+                      (a, b) => (a.orderMetadata.get("OrderDate") as DateTime)
+                          .compareTo(
+                        b.orderMetadata.get("OrderDate") as DateTime,
+                      ),
                     );
                     return PrintOrder(order: results[index]);
                   },

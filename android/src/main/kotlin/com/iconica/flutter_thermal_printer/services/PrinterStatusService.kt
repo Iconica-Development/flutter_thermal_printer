@@ -7,6 +7,7 @@ import com.iconica.flutter_thermal_printer.enums.PrinterState
 import com.starmicronics.stario.StarIOPort
 import com.starmicronics.stario.StarIOPortException
 import com.starmicronics.stario.StarPrinterStatus
+import java.io.IOException
 
 import java.util.logging.Logger
 
@@ -82,6 +83,8 @@ class PrinterStatusService {
             }
         } catch(ex: StarIOPortException) {
             logger.warning("Error checking printer status: ${ex.message}")
+        } catch (e: IOException) {
+            logger.warning("Failed to connect to Socket: ${e.message}")
         } finally {
             port?.let {
                 try {
