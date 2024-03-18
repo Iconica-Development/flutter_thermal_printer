@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Flutter example test app
+* Android STAR Micronics prototype

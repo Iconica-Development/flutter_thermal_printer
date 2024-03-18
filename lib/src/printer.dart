@@ -1,7 +1,6 @@
 import "dart:async";
 
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
-import "package:flutter_thermal_printer/src/models/printer_info.dart";
 import "package:flutter_thermal_printer/src/printer_impl.dart";
 
 class PrintFailure implements Exception {}

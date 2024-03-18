@@ -1,7 +1,6 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
-import "package:flutter_thermal_printer/src/models/printer_info.dart";
 import "package:logging/logging.dart";
 
 class PrinterPlatform {
