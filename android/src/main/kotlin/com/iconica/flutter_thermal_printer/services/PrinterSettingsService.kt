@@ -130,7 +130,7 @@ class PrinterSettingsService {
             "SP747",
         )
 
-        return when(modelName) {
+        return when (modelName) {
             in starPRNTModels -> StarIoExt.Emulation.StarPRNT
             in starLineModels -> StarIoExt.Emulation.StarLine
             in starGraphicModels -> StarIoExt.Emulation.StarGraphic

@@ -7,8 +7,8 @@ import com.iconica.flutter_thermal_printer.enums.PrinterState
 import com.starmicronics.stario.StarIOPort
 import com.starmicronics.stario.StarIOPortException
 import com.starmicronics.stario.StarPrinterStatus
-import java.io.IOException
 
+import java.io.IOException
 import java.util.logging.Logger
 
 /**
@@ -55,9 +55,10 @@ class PrinterStatusService {
         var port: StarIOPort? = null
         var printerState = PrinterState.notFound
 
-        val printerInfo = printerSearchingService.getMostCompatiblePrinter(applicationContext) ?: return printerState
-
         try {
+            val printerInfo = printerSearchingService.getMostCompatiblePrinter(applicationContext)
+                .get()
+
             port = StarIOPort.getPort(
                 printerInfo.portName,
                 printerInfo.portSettings,
@@ -76,15 +77,19 @@ class PrinterStatusService {
                 status.voltageError -> PrinterState.voltageError
                 status.receiptPaperEmpty -> PrinterState.paperEmptyError
                 status.paperDetectionError -> PrinterState.paperPositionError
-                status.receiptPaperNearEmptyOuter || status.receiptPaperNearEmptyInner -> PrinterState.paperNearEmptyNotification
+                status.receiptPaperNearEmptyOuter || status.receiptPaperNearEmptyInner ->
+                    PrinterState.paperNearEmptyNotification
+
                 status.blackMarkError -> PrinterState.cleaningNotification
                 status.unrecoverableError -> PrinterState.unknown
                 else -> PrinterState.ok
             }
-        } catch(ex: StarIOPortException) {
+        } catch (ex: StarIOPortException) {
             logger.warning("Error checking printer status: ${ex.message}")
         } catch (e: IOException) {
             logger.warning("Failed to connect to Socket: ${e.message}")
+        } catch (e: NoSuchElementException) {
+            logger.warning("No printer found");
         } finally {
             port?.let {
                 try {

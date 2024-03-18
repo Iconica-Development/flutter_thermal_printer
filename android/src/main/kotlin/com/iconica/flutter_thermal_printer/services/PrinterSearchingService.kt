@@ -7,8 +7,9 @@ import com.iconica.flutter_thermal_printer.models.PrinterInfo
 import com.starmicronics.stario.PortInfo
 import com.starmicronics.stario.StarIOPort
 import com.starmicronics.stario.StarIOPortException
-import java.io.IOException
 
+import java.io.IOException
+import java.util.Optional
 import java.util.logging.Logger
 
 /**
@@ -72,29 +73,29 @@ class PrinterSearchingService {
      * will check for a USB printer, then a Bluetooth printer, and finally a wireless printer.
      *
      * @param applicationContext {@link Context} The application context.
-     * @return {@link PrinterInfo} The most compatible printer for the device.
+     * @return {@link Optional} containing {@link PrinterInfo} of the most compatible printer.
      */
-    fun getMostCompatiblePrinter(applicationContext: Context): PrinterInfo? {
+    fun getMostCompatiblePrinter(applicationContext: Context): Optional<PrinterInfo> {
         selectedPrinter?.let {
-            return it
+            return Optional.of(it)
         }
 
         val usbPrinters = getUsbPrinters(applicationContext)
         if (usbPrinters.isNotEmpty()) {
-            return toPrinterInfo(usbPrinters[0])
+            return Optional.of(toPrinterInfo(usbPrinters[0]))
         }
 
         val bluetoothPrinters = getBluetoothPrinters()
         if (bluetoothPrinters.isNotEmpty()) {
-            return toPrinterInfo(bluetoothPrinters[0])
+            return Optional.of(toPrinterInfo(bluetoothPrinters[0]))
         }
 
         val wirelessPrinters = getWirelessPrinters()
         if (wirelessPrinters.isNotEmpty()) {
-            return toPrinterInfo(wirelessPrinters[0])
+            return Optional.of(toPrinterInfo(wirelessPrinters[0]))
         }
 
-        return null
+        return Optional.empty()
     }
 
     /**
@@ -104,9 +105,13 @@ class PrinterSearchingService {
      * @param portName {@link String} The port name of the printer.
      * @return {@link PrinterInfo} The printer with the provided port name.
      */
-    fun getPrinterFromPortName(applicationContext: Context, portName: String): PrinterInfo? {
+    fun getPrinterFromPortName(
+        applicationContext: Context,
+        portName: String
+    ): Optional<PrinterInfo> {
         val printers = getPrinters(applicationContext)
-        return printers.find { it.portName == portName }
+        val printer = printers.find { it.portName == portName }
+        return Optional.ofNullable(printer)
     }
 
     /**
@@ -141,7 +146,7 @@ class PrinterSearchingService {
             port = StarIOPort.getPort(portInfo.portName, "", 1000, null)
             val firmwareInformation = port.firmwareInformation
 
-            if (firmwareInformation.containsKey("ModelName"))  {
+            if (firmwareInformation.containsKey("ModelName")) {
                 return firmwareInformation["ModelName"] ?: ""
             }
         } catch (e: StarIOPortException) {
@@ -165,7 +170,13 @@ class PrinterSearchingService {
         val modelName = getModelName(portInfo)
         val emulation = printerSettingsService.getEmulation(modelName)
         val portSettings = printerSettingsService.getPortSettingsOption(emulation.toString())
-        return PrinterInfo(portInfo.portName, modelName, portInfo.macAddress, emulation, portSettings)
+        return PrinterInfo(
+            portInfo.portName,
+            modelName,
+            portInfo.macAddress,
+            emulation,
+            portSettings
+        )
     }
 
     private fun getBluetoothPrinters(): List<PortInfo> {

@@ -44,15 +44,13 @@ PrintJobRequest generatePrintJobRequest(OrderInfo orderInfo) => PrintJobRequest(
                   (product) => [
                     product.name,
                     product.quantity.toString(),
-                    "€ ${product.price.toStringAsFixed(2)}",
+                    "€ ${product.roundedTotal}",
                   ],
                 )
                 .toList(),
           )
           .addSpacing(30)
-          .addText(
-            "Totaal: € ${orderInfo.totalAmount.toStringAsFixed(2)}",
-          )
+          .addText("Totaal: € ${orderInfo.totalAmount.toStringAsFixed(2)}")
           .addSpacing(50)
           .addText("Volgende keer via onze app bestellen? Download de app!")
           .addSpacing(20)

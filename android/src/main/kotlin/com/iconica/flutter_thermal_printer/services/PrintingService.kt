@@ -61,8 +61,11 @@ class PrintingService {
 
         var port: StarIOPort? = null
 
-        val printerInfo = printerSearchingService.getMostCompatiblePrinter(applicationContext)
-        if (printerInfo == null) {
+        val printerInfo: PrinterInfo
+
+        try {
+            printerInfo = printerSearchingService.getMostCompatiblePrinter(applicationContext).get()
+        } catch (e: NoSuchElementException) {
             logger.severe("No printer found")
             return false
         }
@@ -120,66 +123,62 @@ class PrintingService {
         builder.beginDocument()
 
         for (data in receiptData) {
-            try {
-                when (data.first) {
-                    ReceiptType.text -> {
-                        val textData = data.second as String
-                        builder.appendBitmap(
-                            printerBuilder.createBitmapFromText(
-                                textData,
-                                PAPER_WIDTH
-                            ),
-                            true,
-                            PAPER_WIDTH,
-                            true
-                        )
-                    }
+            when (data.first) {
+                ReceiptType.text -> {
+                    val textData = data.second as String
+                    builder.appendBitmap(
+                        printerBuilder.createBitmapFromText(
+                            textData,
+                            PAPER_WIDTH
+                        ),
+                        true,
+                        PAPER_WIDTH,
+                        true
+                    )
+                }
 
-                    ReceiptType.qrCode -> {
-                        val qrCodeData = (data.second as String).toByteArray()
-                        builder.appendQrCodeWithAlignment(
-                            qrCodeData,
-                            ICommandBuilder.QrCodeModel.No1,
-                            ICommandBuilder.QrCodeLevel.Q,
-                            8,
-                            ICommandBuilder.AlignmentPosition.Center
-                        )
-                    }
+                ReceiptType.qrCode -> {
+                    val qrCodeData = (data.second as String).toByteArray()
+                    builder.appendQrCodeWithAlignment(
+                        qrCodeData,
+                        ICommandBuilder.QrCodeModel.No1,
+                        ICommandBuilder.QrCodeLevel.Q,
+                        8,
+                        ICommandBuilder.AlignmentPosition.Center
+                    )
+                }
 
-                    ReceiptType.barcode -> {
-                        val barcodeData = (data.second as String).toByteArray()
-                        builder.appendBarcodeWithAlignment(
-                            barcodeData,
-                            ICommandBuilder.BarcodeSymbology.Code128,
-                            ICommandBuilder.BarcodeWidth.Mode1,
-                            50,
-                            true,
-                            ICommandBuilder.AlignmentPosition.Center
-                        )
-                    }
+                ReceiptType.barcode -> {
+                    val barcodeData = (data.second as String).toByteArray()
+                    builder.appendBarcodeWithAlignment(
+                        barcodeData,
+                        ICommandBuilder.BarcodeSymbology.Code128,
+                        ICommandBuilder.BarcodeWidth.Mode1,
+                        50,
+                        true,
+                        ICommandBuilder.AlignmentPosition.Center
+                    )
+                }
 
-                    ReceiptType.table -> {
-                        val tableData = data.second as TableInfo
-                        builder.appendBitmap(
-                            printerBuilder.createBitmapFromTableInfo(PAPER_WIDTH, tableData),
-                            true,
-                            PAPER_WIDTH,
-                            true
-                        )
-                    }
+                ReceiptType.table -> {
+                    val tableData = data.second as TableInfo
+                    builder.appendBitmap(
+                        printerBuilder.createBitmapFromTableInfo(PAPER_WIDTH, tableData),
+                        true,
+                        PAPER_WIDTH,
+                        true
+                    )
+                }
 
-                    ReceiptType.spacing -> {
-                        val spacing = (data.second as String).toIntOrNull()
-                        if (spacing != null) {
-                            builder.appendUnitFeed(spacing)
-                        } else {
-                            logger.warning("Invalid spacing value: ${data.second}")
-                            builder.appendUnitFeed(20)
-                        }
+                ReceiptType.spacing -> {
+                    val spacing = (data.second as String).toIntOrNull()
+                    if (spacing != null) {
+                        builder.appendUnitFeed(spacing)
+                    } else {
+                        logger.warning("Invalid spacing value: ${data.second}")
+                        builder.appendUnitFeed(20)
                     }
                 }
-            } catch (e: IncorrectAndroidVersionException) {
-                logger.severe("Failed to create bitmap: ${e.message}")
             }
         }
 
