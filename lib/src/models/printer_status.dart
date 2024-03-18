@@ -1,5 +1,29 @@
 import "package:flutter_thermal_printer/src/models/enums/printer_state.dart";
 
+/// A class for the status of a printer.
+/// This class provides the state and recoverability of a printer.
+/// Use this class to get the status of a printer.
+///
+/// Example:
+/// ```dart
+/// var printerStatus = await printer.getPrinterStatus();
+///
+/// if (printerStatus == null) {
+///  return;
+/// }
+///
+/// // get the state of the printer
+/// print(printerStatus.state);
+///
+/// // get the recoverability of the printer
+/// print(printerStatus.isRecoverable);
+///
+/// // get an error message for the printer status
+/// print(printerStatus.getError());
+///
+/// // get a notification for the printer status
+/// print(printerStatus.getNotification());
+/// ```
 class PrinterStatus {
   const PrinterStatus({required this.state, required this.isRecoverable});
 
@@ -23,8 +47,11 @@ class PrinterStatus {
   final PrinterState state;
   final bool isRecoverable;
 
+  /// Returns `true` if the printer status is OK.
   bool? isOK() => state == PrinterState.ok;
 
+  /// Returns a notification for the printer status.
+  /// Notifications are messages that inform the user about the printer status.
   String? getNotification() {
     switch (state) {
       case PrinterState.paperNearEmptyNotification:
@@ -38,6 +65,11 @@ class PrinterStatus {
     }
   }
 
+  /// Returns an error message for the printer status.
+  /// Error messages are messages that inform the user about critical
+  /// issues with the printer. If there is a critical issue with the printer,
+  /// the user should take action to resolve the issue. The printer will be
+  /// unable to print until the issue is resolved.
   String? getError() {
     switch (state) {
       case PrinterState.notFound:

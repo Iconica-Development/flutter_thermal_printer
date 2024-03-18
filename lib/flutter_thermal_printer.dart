@@ -8,6 +8,7 @@ export "src/models/orders/order_metadata.dart";
 export "src/models/orders/order_print_info.dart";
 export "src/models/print_job_request.dart";
 export "src/models/print_job_result.dart";
+export "src/models/printer_info.dart";
 export "src/models/printer_status.dart";
 export "src/models/receipt_dto.dart";
 

@@ -1,3 +1,7 @@
+/// PrinterInfo model class
+/// This class is used to represent the information of a printer.
+/// The information of the printer can be used to determine the printer
+/// model, port name, mac address, emulation, and port settings.
 class PrinterInfo {
   PrinterInfo({
     required this.portName,

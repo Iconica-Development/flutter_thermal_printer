@@ -13,15 +13,15 @@ import "package:pair/pair.dart";
 /// ```dart
 /// var receiptDTO = ReceiptBuilder()
 ///  .addText("Hello, World!")
-/// .addQRCode("https://github.com")
-/// .addBarcode("1234567890")
-/// .addTable([
-///  ["Item", "Price"],
-///  ["Apple", "1.00"],
-///  ["Banana", "0.50"],
-/// ])
-/// .addSpacing(20)
-/// .build();
+///  .addQRCode("https://iconica.app")
+///  .addBarcode("1234567890")
+///  .addTable([
+///   ["Item", "Price"],
+///   ["Apple", "1.00"],
+///   ["Banana", "0.50"],
+///  ])
+///  .addSpacing(20)
+///  .build();
 /// ```
 class ReceiptBuilder {
   final List<Pair<ReceiptData, String>> _data = List.empty(growable: true);
