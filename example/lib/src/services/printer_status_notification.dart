@@ -1,10 +1,21 @@
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
 
+/// A class that provides a message for the printer status.
+///
+/// This class provides a message for the printer status. The message
+/// is based on the [PrinterState] of the printer status.
 class PrinterStatusNotification {
   static const _unknownErrorMessage = """
 Something unexpected happened to the printer.
   Try restarting the printer.""";
 
+  /// Returns a message for the printer status.
+  ///
+  /// This method returns a message for the printer status based on the
+  /// [PrinterState] of the printer status. If the printer status is
+  /// [PrinterState.ok], the method returns `null`. If the printer status
+  /// is anything other than [PrinterState.ok], the method returns a message
+  /// based on the [PrinterState] of the printer status.
   String? getPrinterStatus(PrinterStatus status) {
     switch (status.state) {
       case PrinterState.ok:
