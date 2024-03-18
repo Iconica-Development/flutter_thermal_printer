@@ -91,7 +91,7 @@ class _OrderDetailPage extends StatelessWidget {
               children: [
                 Text(
                   """
-Order Date: ${_getOrderDate(order.orderMetadata.get("OrderId"))}""",
+Order Date: ${_getOrderDate(order.orderMetadata.get("OrderDate"))}""",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(

@@ -33,7 +33,6 @@ class ReceiptConverter {
 
             if (type == ReceiptType.table) {
                 val value = it["value"] as String
-                logger.info("Parsing JSON: $value")
 
                 if (!isValidJson(value)) {
                     logger.severe("Invalid JSON string: $value")

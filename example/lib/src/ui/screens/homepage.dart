@@ -30,7 +30,8 @@ class _HomepageState extends State<Homepage> {
       return;
     }
 
-    var randomOrder = generateRandomOrder();
+    var orderInfo = generateRandomOrderInfo();
+    var randomOrder = generatePrintJobRequest(orderInfo);
 
     _listNotifier.add(await Printer.instance.executePrint(randomOrder));
   }
