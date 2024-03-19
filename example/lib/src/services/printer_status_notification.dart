@@ -16,34 +16,22 @@ Something unexpected happened to the printer.
   /// [PrinterState.ok], the method returns `null`. If the printer status
   /// is anything other than [PrinterState.ok], the method returns a message
   /// based on the [PrinterState] of the printer status.
-  String? getPrinterStatus(PrinterStatus status) {
-    switch (status.state) {
-      case PrinterState.ok:
-        return null;
-      case PrinterState.notFound:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.unknown:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.offline:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.coverOpen:
-        return status.getNotification();
-      case PrinterState.cutterError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.highTemperatureError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.voltageError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.paperJamError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.paperEmptyError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.paperPositionError:
-        return status.getError() ?? _unknownErrorMessage;
-      case PrinterState.paperNearEmptyNotification:
-        return status.getNotification();
-      case PrinterState.cleaningNotification:
-        return status.getNotification();
-    }
-  }
+  String? getPrinterStatus(PrinterStatus status) => switch (status.state) {
+        PrinterState.ok => null,
+        PrinterState.notFound => status.getError() ?? _unknownErrorMessage,
+        PrinterState.unknown => status.getError() ?? _unknownErrorMessage,
+        PrinterState.offline => status.getError() ?? _unknownErrorMessage,
+        PrinterState.coverOpen => status.getNotification(),
+        PrinterState.cutterError => status.getError() ?? _unknownErrorMessage,
+        PrinterState.highTemperatureError =>
+          status.getError() ?? _unknownErrorMessage,
+        PrinterState.voltageError => status.getError() ?? _unknownErrorMessage,
+        PrinterState.paperJamError => status.getError() ?? _unknownErrorMessage,
+        PrinterState.paperEmptyError =>
+          status.getError() ?? _unknownErrorMessage,
+        PrinterState.paperPositionError =>
+          status.getError() ?? _unknownErrorMessage,
+        PrinterState.paperNearEmptyNotification => status.getNotification(),
+        PrinterState.cleaningNotification => status.getNotification(),
+      };
 }

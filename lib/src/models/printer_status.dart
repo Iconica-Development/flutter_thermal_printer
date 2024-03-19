@@ -52,52 +52,37 @@ class PrinterStatus {
 
   /// Returns a notification for the printer status.
   /// Notifications are messages that inform the user about the printer status.
-  String? getNotification() {
-    switch (state) {
-      case PrinterState.paperNearEmptyNotification:
-        return "The printer is soon running out of paper.";
-      case PrinterState.coverOpen:
-        return "The printer cover is open.";
-      case PrinterState.cleaningNotification:
-        return "The printer should be cleaned.";
-      default:
-        return null;
-    }
-  }
+  String? getNotification() => switch (state) {
+        PrinterState.paperNearEmptyNotification =>
+          "The printer is soon running out of paper.",
+        PrinterState.coverOpen => "The printer cover is open.",
+        PrinterState.cleaningNotification => "The printer should be cleaned.",
+        _ => null
+      };
 
   /// Returns an error message for the printer status.
   /// Error messages are messages that inform the user about critical
   /// issues with the printer. If there is a critical issue with the printer,
   /// the user should take action to resolve the issue. The printer will be
   /// unable to print until the issue is resolved.
-  String? getError() {
-    switch (state) {
-      case PrinterState.notFound:
-        return """
-Could not find any printer. Make sure your printer is turned on.""";
-      case PrinterState.unknown:
-        return """
-Something unexpected happened to the printer. Try restarting the printer.""";
-      case PrinterState.offline:
-        return "The printer is offline.";
-      case PrinterState.coverOpen:
-        return "The printer cover is open.";
-      case PrinterState.cutterError:
-        return "The cutter is not working properly.";
-      case PrinterState.highTemperatureError:
-        return "The printer is too hot. Move the printer to a cooler place.";
-      case PrinterState.voltageError:
-        return """
-The printer is not getting enough power. Check the power supply.""";
-      case PrinterState.paperJamError:
-        return "The printer has a paper jam. Remove the jammed paper manually.";
-      case PrinterState.paperEmptyError:
-        return "The printer is out of paper. Load paper into the printer.";
-      case PrinterState.paperPositionError:
-        return """
-The paper roll is not positioned properly. Re-position the paper roll.""";
-      default:
-        return null;
-    }
-  }
+  String? getError() => switch (state) {
+        PrinterState.notFound => """
+Could not find any printer. Make sure your printer is turned on.""",
+        PrinterState.unknown => """
+Something unexpected happened to the printer. Try restarting the printer.""",
+        PrinterState.offline => "The printer is offline.",
+        PrinterState.coverOpen => "The printer cover is open.",
+        PrinterState.cutterError => "The cutter is not working properly.",
+        PrinterState.highTemperatureError =>
+          "The printer is too hot. Move the printer to a cooler place.",
+        PrinterState.voltageError => """
+The printer is not getting enough power. Check the power supply.""",
+        PrinterState.paperJamError =>
+          "The printer has a paper jam. Remove the jammed paper manually.",
+        PrinterState.paperEmptyError =>
+          "The printer is out of paper. Load paper into the printer.",
+        PrinterState.paperPositionError => """
+The paper roll is not positioned properly. Re-position the paper roll.""",
+        _ => null
+      };
 }
