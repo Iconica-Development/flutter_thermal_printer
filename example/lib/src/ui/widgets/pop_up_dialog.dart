@@ -20,7 +20,7 @@ class PopUpDialog extends StatelessWidget {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () async {
+            onPressed: () {
               unawaited(Printer.instance.getStatus());
             },
             child: const Text("Scan again"),

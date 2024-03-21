@@ -50,8 +50,8 @@ class PluginController : FlutterPlugin, MethodCallHandler {
         channel.setMethodCallHandler(this)
         applicationContext = flutterPluginBinding.applicationContext
 
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
+//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+//        StrictMode.setThreadPolicy(policy)
     }
 
     /**

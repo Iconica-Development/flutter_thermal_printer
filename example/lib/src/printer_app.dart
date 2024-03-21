@@ -8,7 +8,7 @@ class PrinterApp extends StatelessWidget {
   MaterialApp build(BuildContext context) => MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            title: const Text("Flutter Printer"),
+            title: const Text("Lokaal Gemak Printer"),
           ),
           body: const Homepage(),
         ),

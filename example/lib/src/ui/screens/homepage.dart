@@ -5,7 +5,7 @@ import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
 import "package:flutter_thermal_printer_example/src/services/bluetooth_permission_service.dart";
 import "package:flutter_thermal_printer_example/src/services/order_generator.dart";
 import "package:flutter_thermal_printer_example/src/ui/screens/notification_page.dart";
-import "package:flutter_thermal_printer_example/src/ui/widgets/print_order.dart";
+import "package:flutter_thermal_printer_example/src/ui/widgets/order_card.dart";
 import "package:permission_handler/permission_handler.dart";
 
 class Homepage extends StatefulWidget {
@@ -16,79 +16,83 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final ListModel _listNotifier = ListModel();
+  final bakeryOrder = generatePrintJobRequest(generateBakeryOrder());
 
-  var _showBluetoothMessage = false;
+  final butcherOrder = generatePrintJobRequest(generateButcherOrder());
 
-  Future<void> _generateOrder(BuildContext context) async {
-    var result = await requestBluetoothPermission();
+  final pizzeriaOrder = generatePrintJobRequest(generatePizzeriaOrder());
 
-    if (result != PermissionStatus.granted) {
-      setState(() {
-        _showBluetoothMessage = true;
-      });
-      return;
-    }
+  final snackbarOrder = generatePrintJobRequest(generateSnackbarOrder());
 
-    var orderInfo = generateRandomOrderInfo();
-    var randomOrder = generatePrintJobRequest(orderInfo);
-
-    _listNotifier.add(await Printer.instance.executePrint(randomOrder));
-  }
+  var _isPrinting = true;
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    Future.microtask(() async {
       var result = await requestBluetoothPermission();
 
       if (result.isGranted) {
         await Future.delayed(const Duration(seconds: 1));
-        unawaited(Printer.instance.getPrinter());
+        await Printer.instance.getPrinter();
       }
+
+      setState(() {
+        _isPrinting = false;
+      });
     });
 
-    return Center(
-      child: Column(
-        children: [
-          Expanded(
-            child: ListenableBuilder(
-              listenable: _listNotifier,
-              builder: (BuildContext context, Widget? child) {
-                var results = _listNotifier.items;
+    Future<void> _buildReceipt(PrintJobRequest printJobRequest) async {
+      setState(() {
+        _isPrinting = true;
+      });
+      await Future.delayed(const Duration(seconds: 1));
+      await Printer.instance.executePrint(bakeryOrder);
+      await Future.delayed(const Duration(seconds: 10));
+      setState(() {
+        _isPrinting = false;
+      });
+    }
 
-                return ListView.builder(
-                  itemCount: results.length,
-                  itemBuilder: (context, index) {
-                    results.sort(
-                      (a, b) => (a.orderMetadata.get("OrderDate") as DateTime)
-                          .compareTo(
-                        b.orderMetadata.get("OrderDate") as DateTime,
-                      ),
-                    );
-                    return PrintOrder(order: results[index]);
+    return Center(
+      child: _isPrinting
+          ? Container(
+              width: 24,
+              height: 24,
+              padding: const EdgeInsets.all(2.0),
+              child: const CircularProgressIndicator(
+                color: Colors.black,
+                strokeWidth: 3,
+              ),
+            )
+          : Column(
+              children: [
+                InkWell(
+                  onTap: () async {
+                    await _buildReceipt(bakeryOrder);
                   },
-                );
-              },
+                  child: OrderCard(order: bakeryOrder),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await _buildReceipt(butcherOrder);
+                  },
+                  child: OrderCard(order: butcherOrder),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await _buildReceipt(pizzeriaOrder);
+                  },
+                  child: OrderCard(order: pizzeriaOrder),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await _buildReceipt(snackbarOrder);
+                  },
+                  child: OrderCard(order: snackbarOrder),
+                ),
+                const NotificationPage(),
+              ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 32.0, top: 12),
-            child: ElevatedButton(
-              onPressed: () {
-                unawaited(_generateOrder(context));
-              },
-              child: const Text("Generate test Order"),
-            ),
-          ),
-          const NotificationPage(),
-          if (_showBluetoothMessage)
-            const Text(
-              """
-Please enable Bluetooth and Location permissions to use the printer""",
-              style: TextStyle(color: Colors.red),
-            ),
-        ],
-      ),
     );
   }
 }

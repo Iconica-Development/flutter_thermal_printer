@@ -50,13 +50,13 @@ class PrinterSearchingService {
     fun getPrinters(applicationContext: Context): List<PrinterInfo> {
         val printers = mutableListOf<PrinterInfo>()
 
-        getBluetoothPrinters().forEach {
-            printers.add(toPrinterInfo(it))
-        }
+//        getBluetoothPrinters().forEach {
+//            printers.add(toPrinterInfo(it))
+//        }
 
-        getWirelessPrinters().forEach {
-            printers.add(toPrinterInfo(it))
-        }
+//        getWirelessPrinters().forEach {
+//            printers.add(toPrinterInfo(it))
+//        }
 
         getUsbPrinters(applicationContext).forEach {
             printers.add(toPrinterInfo(it))
@@ -80,20 +80,20 @@ class PrinterSearchingService {
             return Optional.of(it)
         }
 
-        val usbPrinters = getUsbPrinters(applicationContext)
-        if (usbPrinters.isNotEmpty()) {
-            return Optional.of(toPrinterInfo(usbPrinters[0]))
-        }
+//        val usbPrinters = getUsbPrinters(applicationContext)
+//        if (usbPrinters.isNotEmpty()) {
+//            return Optional.of(toPrinterInfo(usbPrinters[0]))
+//        }
 
         val bluetoothPrinters = getBluetoothPrinters()
         if (bluetoothPrinters.isNotEmpty()) {
             return Optional.of(toPrinterInfo(bluetoothPrinters[0]))
         }
 
-        val wirelessPrinters = getWirelessPrinters()
-        if (wirelessPrinters.isNotEmpty()) {
-            return Optional.of(toPrinterInfo(wirelessPrinters[0]))
-        }
+//        val wirelessPrinters = getWirelessPrinters()
+//        if (wirelessPrinters.isNotEmpty()) {
+//            return Optional.of(toPrinterInfo(wirelessPrinters[0]))
+//        }
 
         return Optional.empty()
     }

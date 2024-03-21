@@ -78,6 +78,6 @@ class PrinterImpl extends Printer {
   /// give the user the option to retry printing the order, you can use this
   /// method.
   @override
-  PrintJobResult retryPrint(PrintJobResult request) =>
+  Future<PrintJobResult> retryPrint(PrintJobResult request) async =>
       _printerService.retryPrintRequest(request);
 }

@@ -63,6 +63,6 @@ class Printer {
   /// call this method if the order failed to print. However, if you want to
   /// give the user the option to retry printing the order, you can use this
   /// method.
-  PrintJobResult retryPrint(PrintJobResult request) =>
+  Future<PrintJobResult> retryPrint(PrintJobResult request) async =>
       throw UnimplementedError("retryPrint() has not been implemented.");
 }

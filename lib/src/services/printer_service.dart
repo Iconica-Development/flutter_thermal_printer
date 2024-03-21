@@ -19,7 +19,9 @@ class PrinterService {
     return printJobResult;
   }
 
-  PrintJobResult retryPrintRequest(PrintJobResult printJobResult) {
+  Future<PrintJobResult> retryPrintRequest(
+    PrintJobResult printJobResult,
+  ) async {
     _addQueue(printJobResult);
     unawaited(_processQueue());
     return printJobResult;
