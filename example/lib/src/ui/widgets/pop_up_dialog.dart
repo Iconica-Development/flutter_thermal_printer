@@ -2,20 +2,14 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
-import "package:flutter_thermal_printer_example/src/services/printer_status_notification.dart";
 
 class PopUpDialog extends StatelessWidget {
-  PopUpDialog({required this.printerStatus, super.key});
+  const PopUpDialog({required this.message, super.key});
 
-  final PrinterStatusNotification _printerStatus = PrinterStatusNotification();
-
-  final PrinterStatus printerStatus;
+  final String message;
 
   @override
-  Widget build(BuildContext context) {
-    var message = _printerStatus.getPrinterStatus(printerStatus);
-    if (message != null) {
-      return AlertDialog(
+  Widget build(BuildContext context) => AlertDialog(
         title: const Text("Printer Error"),
         content: Text(message),
         actions: [
@@ -27,8 +21,4 @@ class PopUpDialog extends StatelessWidget {
           ),
         ],
       );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
 }

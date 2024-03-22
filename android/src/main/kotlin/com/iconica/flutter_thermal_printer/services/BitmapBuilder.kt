@@ -114,10 +114,9 @@ class PrinterBuilder {
     }
 
     private fun calculateTextHeight(text: String, width: Int, textSize: Float): Int {
-        val trimmedText = text.trim()
-        val paint = TextPaint(Paint.DITHER_FLAG)
+        val paint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = textSize
-        val layout = StaticLayout.Builder.obtain(trimmedText, 0, trimmedText.length, paint, width)
+        val layout = StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
             .setAlignment(Layout.Alignment.ALIGN_NORMAL)
             .setLineSpacing(0f, 1f)
             .setIncludePad(true)
@@ -125,16 +124,12 @@ class PrinterBuilder {
         return layout.height
     }
 
-    private fun calculateRowHeight(
-        tableInfo: TableInfo,
-        columnWidth: Int,
-        row: Int,
-        textSize: Float
-    ): Int {
-        val heights = mutableListOf<Int>()
+    private fun calculateRowHeight(tableInfo: TableInfo, columnWidth: Int, row: Int, textSize: Float): Int {
+        var maxHeight = 0
         for (j in 0 until tableInfo.getColumnCount(row)) {
-            heights.add(calculateTextHeight(tableInfo.getText(row, j), columnWidth, textSize))
+            maxHeight =
+                maxOf(maxHeight, calculateTextHeight(tableInfo.getText(row, j), columnWidth, textSize))
         }
-        return heights.maxOrNull() ?: 0
+        return maxHeight
     }
 }

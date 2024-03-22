@@ -51,12 +51,12 @@ OrderInfo generatePizzeriaOrder() => OrderInfo(
       orderId: "#0003",
       products: [
         const ProductInfo(
-          name: "Pizza Margherita",
+          name: "Margherita",
           quantity: 1,
           price: 6.50,
         ),
         const ProductInfo(
-          name: "Pizza Pepperoni",
+          name: "Pepperoni",
           quantity: 3,
           price: 7.25,
         ),

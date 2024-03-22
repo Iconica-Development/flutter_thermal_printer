@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_thermal_printer/flutter_thermal_printer.dart";
+import "package:flutter_thermal_printer_example/src/services/printer_status_notification.dart";
 import "package:flutter_thermal_printer_example/src/ui/widgets/pop_up_dialog.dart";
 
 class NotificationPage extends StatefulWidget {
@@ -14,6 +15,8 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   bool _isDialogShowing = false;
 
+  final _printerStatusNotification = PrinterStatusNotification();
+
   @override
   Widget build(BuildContext context) => StreamBuilder<PrinterStatus>(
         stream: Printer.instance.statusUpdates,
@@ -22,11 +25,14 @@ class _NotificationPageState extends State<NotificationPage> {
             _isDialogShowing = true;
             Future.microtask(
               () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) =>
-                      PopUpDialog(printerStatus: snapshot.data!),
-                );
+                var printerMessage =
+                    _printerStatusNotification.getPrinterStatus(snapshot.data!);
+                if (printerMessage != null) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) => PopUpDialog(message: printerMessage),
+                  );
+                }
                 _isDialogShowing = false;
               },
             );
