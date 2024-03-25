@@ -12,6 +12,8 @@ dependencies:
     path: ../
   cupertino_icons: ^1.0.6
   intl: ^0.19.0
+  permission_handler: ^11.3.0
+  flutter_isolate: ^2.0.4
   
 
 dev_dependencies:
@@ -23,6 +25,13 @@ dev_dependencies:
     git:
       url: https://github.com/Iconica-Development/flutter_iconica_analysis
       ref: 7.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/Logo.png"
+  adaptive_icon_background: "#000000"
 
 flutter:
   uses-material-design: true

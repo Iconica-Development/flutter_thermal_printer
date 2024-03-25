@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  logging: ^1.0.2
+  pair: ^0.1.2
 
 dev_dependencies:
   flutter_test:
@@ -18,14 +20,14 @@ dev_dependencies:
   flutter_iconica_analysis:
     git:
       url: https://github.com/Iconica-Development/flutter_iconica_analysis
-      ref: 6.0.0
+      ref: 7.0.0
 
 flutter:
   plugin:
     platforms:
       android:
         package: com.iconica.flutter_thermal_printer
-        pluginClass: FlutterThermalPrinterPlugin
+        pluginClass: PluginController
       ios:
         pluginClass: FlutterThermalPrinterPlugin
 
